@@ -343,16 +343,16 @@ library SafeMath {
     }
 }
 
-contract DestinyToken is Context, Ownable, IBEP20 {
+contract DestinyCoin is Context, Ownable, IBEP20 {
     using SafeMath for uint256;
 
     mapping(address => uint256) private _balances;
-    mapping(address => mapping(address => uint256)) _allowances;
+    mapping(address => mapping(address => uint256)) private _allowances;
 
     string private _name = "Destiny";
     string private _symbol = "DEST";
     uint8 private _decimals = 18;
-    uint256 private _totalSupply = 100000 * (10 ** _decimals);
+    uint256 private _totalSupply = 210000 * (10 ** _decimals);
 
     constructor() {
         _balances[_msgSender()] = _totalSupply;
