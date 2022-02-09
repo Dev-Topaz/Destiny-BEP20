@@ -352,7 +352,7 @@ contract DestinyCoin is Context, Ownable, IBEP20 {
     string private _name = "Destiny";
     string private _symbol = "DEST";
     uint8 private _decimals = 18;
-    uint256 private _totalSupply = 210000 * (10 ** _decimals);
+    uint256 private _totalSupply = 100000000 * (10 ** _decimals);
 
     constructor() {
         _balances[_msgSender()] = _totalSupply;
