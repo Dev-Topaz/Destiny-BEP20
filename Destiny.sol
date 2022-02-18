@@ -392,8 +392,8 @@ contract DestinyCoin is Context, Ownable, IBEP20, SafeToken, LockToken {
     mapping(address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
 
-    string private _name = "Destiny";
-    string private _symbol = "DEST";
+    string private _name = "MY DESTINY";
+    string private _symbol = "MD";
     uint8 private _decimals = 18;
     uint256 private _totalSupply = 100000000 * (10 ** _decimals);
 
